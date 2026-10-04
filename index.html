@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#b91c1c">
+<title>كريدي المشروبات</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f3f4f6;
+ color:#222;
+}
+header{
+ background:#b91c1c;
+ color:white;
+ padding:22px 15px;
+ text-align:center;
+}
+header h1{margin:0 0 5px;font-size:25px}
+header p{margin:0;font-size:14px}
+
+.container{
+ max-width:700px;
+ margin:auto;
+ padding:15px;
+}
+
+.stats{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px;
+ margin-bottom:12px;
+}
+.stat{
+ background:white;
+ border-radius:14px;
+ padding:17px 8px;
+ text-align:center;
+ box-shadow:0 2px 7px #0001;
+}
+.stat b{
+ display:block;
+ margin-top:6px;
+ font-size:20px;
+ color:#b91c1c;
+}
+
+.card{
+ background:white;
+ border-radius:14px;
+ padding:15px;
+ margin-bottom:12px;
+ box-shadow:0 2px 7px #0001;
+}
+
+input{
+ width:100%;
+ padding:13px;
+ border:1px solid #ddd;
+ border-radius:10px;
+ margin:5px 0;
+ font-size:16px;
+}
+
+button{
+ width:100%;
+ border:0;
+ border-radius:10px;
+ padding:13px;
+ margin-top:7px;
+ font-size:16px;
+ font-weight:bold;
+ background:#b91c1c;
+ color:white;
+}
+
+button.secondary{background:#555}
+button.green{background:#16803c}
+
+.customer{
+ border-top:1px solid #eee;
+ padding-top:12px;
+ margin-top:10px;
+}
+.customer:first-child{border-top:0}
+
+.name{
+ font-size:19px;
+ font-weight:bold;
+}
+.phone{
+ color:#777;
+ font-size:13px;
+ margin-top:3px;
+}
+.debt{
+ color:#b91c1c;
+ font-size:23px;
+ font-weight:bold;
+ margin:10px 0;
+}
+.row{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:7px;
+}
+.empty{
+ text-align:center;
+ color:#777;
+ padding:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>💰 كريدي المشروبات</h1>
+<p>إدارة ديون الزبائن بسهولة</p>
+</header>
+
+<div class="container">
+
+<div class="stats">
+<div class="stat">
+إجمالي الديون
+<b id="total">0 دج</b>
+</div>
+
+<div class="stat">
+عدد الزبائن
+<b id="count">0</b>
+</div>
+</div>
+
+<div class="card">
+<h3>➕ إضافة زبون</h3>
+
+<input id="name" placeholder="اسم الزبون">
+
+<input id="phone" placeholder="رق
