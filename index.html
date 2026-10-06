@@ -297,6 +297,200 @@ function escapeHtml(text){
 
 render();
 
+<script>
+
+let customers =
+JSON.parse(localStorage.getItem("customers") || "[]");
+
+function save(){
+ localStorage.setItem("customers",JSON.stringify(customers));
+ render();
+}
+
+function openAdd(){
+ document.getElementById("modal").style.display="flex";
+ document.getElementById("name").focus();
+}
+
+function closeModal(){
+ document.getElementById("modal").style.display="none";
+ document.getElementById("name").value="";
+ document.getElementById("phone").value="";
+ document.getElementById("debt").value="";
+}
+
+function addCustomer(){
+
+ let name=document.getElementById("name").value.trim();
+ let phone=document.getElementById("phone").value.trim();
+ let debt=Number(document.getElementById("debt").value);
+
+ if(!name){
+  alert("اكتب اسم الزبون");
+  return;
+ }
+
+ customers.push({
+  id:Date.now(),
+  name:name,
+  phone:phone,
+  debt:debt,
+  payments:[]
+ });
+
+ save();
+ closeModal();
+}
+
+function payment(id){
+
+ let customer=customers.find(c=>c.id===id);
+
+ if(!customer)return;
+
+ let amount=Number(prompt(
+ "أدخل المبلغ الذي دفعه الزبون بالدج:",
+ "0"
+ ));
+
+ if(!amount || amount<=0)return;
+
+ if(amount>customer.debt){
+  alert("المبلغ أكبر من الدين المتبقي");
+  return;
+ }
+
+ let now=new Date();
+
+ let date=
+ now.toLocaleDateString("ar-DZ")+
+ " - "+
+ now.toLocaleTimeString("ar-DZ",{
+  hour:"2-digit",
+  minute:"2-digit"
+ });
+
+ if(!customer.payments)
+  customer.payments=[];
+
+ customer.payments.push({
+  amount:amount,
+  date:date
+ });
+
+ customer.debt-=amount;
+
+ save();
+}
+
+function showHistory(id){
+
+ let customer=customers.find(c=>c.id===id);
+
+ if(!customer)return;
+
+ if(!customer.payments || customer.payments.length===0){
+  alert("لا توجد دفعات مسجلة لهذا الزبون");
+  return;
+ }
+
+ let text="سجل دفعات "+customer.name+"\n\n";
+
+ customer.payments.forEach((p,i)=>{
+  text+=(i+1)+"- "+
+  Number(p.amount).toLocaleString("ar-DZ")+
+  " دج\n"+
+  "📅 "+p.date+"\n\n";
+ });
+
+ text+="المتبقي: "+
+ Number(customer.debt).toLocaleString("ar-DZ")+
+ " دج";
+
+ alert(text);
+}
+
+function removeCustomer(id){
+
+ if(!confirm("هل تريد حذف هذا الزبون؟"))
+  return;
+
+ customers=customers.filter(c=>c.id!==id);
+
+ save();
+}
+
+function render(){
+
+ let box=document.getElementById("customers");
+
+ document.getElementById("count").textContent=
+ customers.length;
+
+ let total=customers.reduce(
+ (sum,c)=>sum+Number(c.debt),0
+ );
+
+ document.getElementById("total").textContent=
+ total.toLocaleString("ar-DZ");
+
+ if(customers.length===0){
+  box.innerHTML=
+  '<div class="empty">لا يوجد زبائن بعد</div>';
+  return;
+ }
+
+ box.innerHTML=customers.map(c=>`
+
+ <div class="customer">
+
+ <h3>👤 ${escapeHtml(c.name)}</h3>
+
+ ${c.phone ?
+ `<div>📞 ${escapeHtml(c.phone)}</div>` : ""}
+
+ <p>
+ 💰 الدين:
+ <span class="debt">
+ ${Number(c.debt).toLocaleString("ar-DZ")} دج
+ </span>
+ </p>
+
+ <div class="actions">
+
+ <button class="pay"
+ onclick="payment(${c.id})">
+ 💵 دفع
+ </button>
+
+ <button
+ onclick="showHistory(${c.id})">
+ 📋 السجل
+ </button>
+
+ <button class="delete"
+ onclick="removeCustomer(${c.id})">
+ 🗑️ حذف
+ </button>
+
+ </div>
+
+ </div>
+
+ `).join("");
+}
+
+function escapeHtml(text){
+ return String(text)
+ .replaceAll("&","&amp;")
+ .replaceAll("<","&lt;")
+ .replaceAll(">","&gt;")
+ .replaceAll('"',"&quot;")
+ .replaceAll("'","&#039;");
+}
+
+render();
+
 </script>
 
 </body>
