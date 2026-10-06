@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#b91c1c">
 <title>كريدي المشروبات</title>
 
@@ -10,113 +10,106 @@
 *{box-sizing:border-box}
 body{
  margin:0;
- body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f3f4f6;
-  color:#222;
- }
+ font-family:Arial,sans-serif;
  background:#f3f4f6;
  color:#222;
 }
 header{
  background:#b91c1c;
  color:white;
- padding:22px 15px;
  text-align:center;
+ padding:25px 15px;
 }
-header h1{margin:0 0 5px;font-size:25px}
-header p{margin:0;font-size:14px}
+header h1{margin:0;font-size:30px}
+header p{margin:10px 0 0;font-size:18px}
 
-.container{
- max-width:700px;
- margin:auto;
- padding:15px;
-}
+.container{padding:18px;max-width:700px;margin:auto}
 
-.stats{
+.cards{
  display:grid;
  grid-template-columns:1fr 1fr;
- gap:10px;
- margin-bottom:12px;
+ gap:12px;
 }
-.stat{
- background:white;
- border-radius:14px;
- padding:17px 8px;
- text-align:center;
- box-shadow:0 2px 7px #0001;
-}
-.stat b{
- display:block;
- margin-top:6px;
- font-size:20px;
- color:#b91c1c;
-}
-
 .card{
  background:white;
- border-radius:14px;
- padding:15px;
- margin-bottom:12px;
- box-shadow:0 2px 7px #0001;
+ border-radius:18px;
+ padding:20px 10px;
+ text-align:center;
+ box-shadow:0 3px 12px #0001;
 }
+.card h3{margin:0 0 10px;font-size:18px}
+.card strong{font-size:27px;color:#b91c1c}
+
+button{
+ border:0;
+ border-radius:12px;
+ padding:13px 18px;
+ font-size:17px;
+ cursor:pointer;
+}
+.add{
+ width:100%;
+ margin:18px 0;
+ background:#b91c1c;
+ color:white;
+ font-weight:bold;
+}
+
+.customer{
+ background:white;
+ border-radius:16px;
+ padding:16px;
+ margin-bottom:12px;
+ box-shadow:0 2px 8px #0001;
+}
+.customer h3{margin:0 0 8px}
+.debt{color:#b91c1c;font-weight:bold}
+.actions{display:flex;gap:8px;margin-top:12px}
+.actions button{flex:1}
+.pay{background:#16a34a;color:white}
+.delete{background:#eee;color:#b91c1c}
 
 input{
  width:100%;
  padding:13px;
+ margin:7px 0;
  border:1px solid #ddd;
  border-radius:10px;
- margin:5px 0;
  font-size:16px;
 }
 
-button{
+.modal{
+ display:none;
+ position:fixed;
+ inset:0;
+ background:#0008;
+ padding:20px;
+ align-items:center;
+ justify-content:center;
+}
+.modal-box{
+ background:white;
  width:100%;
- border:0;
- border-radius:10px;
- padding:13px;
- margin-top:7px;
- font-size:16px;
- font-weight:bold;
+ max-width:500px;
+ border-radius:18px;
+ padding:20px;
+}
+.modal-box h2{margin-top:0}
+.save{
+ width:100%;
  background:#b91c1c;
  color:white;
-}
-
-button.secondary{background:#555}
-button.green{background:#16803c}
-
-.customer{
- border-top:1px solid #eee;
- padding-top:12px;
  margin-top:10px;
 }
-.customer:first-child{border-top:0}
-
-.name{
- font-size:19px;
- font-weight:bold;
-}
-.phone{
- color:#777;
- font-size:13px;
- margin-top:3px;
-}
-.debt{
- color:#b91c1c;
- font-size:23px;
- font-weight:bold;
- margin:10px 0;
-}
-.row{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:7px;
+.close{
+ width:100%;
+ background:#eee;
+ margin-top:8px;
 }
 .empty{
  text-align:center;
  color:#777;
- padding:20px;
+ padding:30px;
 }
 </style>
 </head>
@@ -124,27 +117,187 @@ button.green{background:#16803c}
 <body>
 
 <header>
-<h1>💰 كريدي المشروبات</h1>
+<h1>كريدي المشروبات 💰</h1>
 <p>إدارة ديون الزبائن بسهولة</p>
 </header>
 
 <div class="container">
 
-<div class="stats">
-<div class="stat">
-إجمالي الديون
-<b id="total">0 دج</b>
-</div>
-
-<div class="stat">
-عدد الزبائن
-<b id="count">0</b>
-</div>
+<div class="cards">
+<div class="card">
+<h3>عدد الزبائن</h3>
+<strong id="count">0</strong>
 </div>
 
 <div class="card">
-<h3>➕ إضافة زبون</h3>
+<h3>إجمالي الديون</h3>
+<strong><span id="total">0</span> دج</strong>
+</div>
+</div>
+
+<button class="add" onclick="openAdd()">➕ إضافة زبون</button>
+
+<div id="customers"></div>
+
+</div>
+
+<div class="modal" id="modal">
+<div class="modal-box">
+
+<h2>إضافة زبون</h2>
 
 <input id="name" placeholder="اسم الزبون">
+<input id="phone" placeholder="رقم الهاتف">
+<input id="debt" type="number" placeholder="مبلغ الدين بالدج">
 
-<input id="phone" placeholder="رق
+<button class="save" onclick="addCustomer()">حفظ الزبون</button>
+<button class="close" onclick="closeModal()">إلغاء</button>
+
+</div>
+</div>
+
+<script>
+
+let customers =
+JSON.parse(localStorage.getItem("customers") || "[]");
+
+function save(){
+ localStorage.setItem("customers",JSON.stringify(customers));
+ render();
+}
+
+function openAdd(){
+ document.getElementById("modal").style.display="flex";
+ document.getElementById("name").focus();
+}
+
+function closeModal(){
+ document.getElementById("modal").style.display="none";
+ document.getElementById("name").value="";
+ document.getElementById("phone").value="";
+ document.getElementById("debt").value="";
+}
+
+function addCustomer(){
+
+ let name=document.getElementById("name").value.trim();
+ let phone=document.getElementById("phone").value.trim();
+ let debt=Number(document.getElementById("debt").value);
+
+ if(!name){
+  alert("اكتب اسم الزبون");
+  return;
+ }
+
+ customers.push({
+  id:Date.now(),
+  name:name,
+  phone:phone,
+  debt:debt
+ });
+
+ save();
+ closeModal();
+}
+
+function payment(id){
+
+ let customer=customers.find(c=>c.id===id);
+
+ if(!customer)return;
+
+ let amount=Number(prompt(
+ "المبلغ الذي دفعه الزبون بالدج:",
+ "0"
+ ));
+
+ if(!amount || amount<=0)return;
+
+ customer.debt-=amount;
+
+ if(customer.debt<0)
+  customer.debt=0;
+
+ save();
+}
+
+function removeCustomer(id){
+
+ if(!confirm("هل تريد حذف هذا الزبون؟"))
+  return;
+
+ customers=customers.filter(c=>c.id!==id);
+
+ save();
+}
+
+function render(){
+
+ let box=document.getElementById("customers");
+
+ document.getElementById("count").textContent=
+ customers.length;
+
+ let total=customers.reduce(
+ (sum,c)=>sum+Number(c.debt),0
+ );
+
+ document.getElementById("total").textContent=
+ total.toLocaleString("ar-DZ");
+
+ if(customers.length===0){
+  box.innerHTML=
+  '<div class="empty">لا يوجد زبائن بعد</div>';
+  return;
+ }
+
+ box.innerHTML=customers.map(c=>`
+
+ <div class="customer">
+
+ <h3>👤 ${escapeHtml(c.name)}</h3>
+
+ ${c.phone ?
+ `<div>📞 ${escapeHtml(c.phone)}</div>` : ""}
+
+ <p>
+ 💰 الدين:
+ <span class="debt">
+ ${Number(c.debt).toLocaleString("ar-DZ")} دج
+ </span>
+ </p>
+
+ <div class="actions">
+
+ <button class="pay"
+ onclick="payment(${c.id})">
+ 💵 دفع
+ </button>
+
+ <button class="delete"
+ onclick="removeCustomer(${c.id})">
+ 🗑️ حذف
+ </button>
+
+ </div>
+
+ </div>
+
+ `).join("");
+}
+
+function escapeHtml(text){
+ return String(text)
+ .replaceAll("&","&amp;")
+ .replaceAll("<","&lt;")
+ .replaceAll(">","&gt;")
+ .replaceAll('"',"&quot;")
+ .replaceAll("'","&#039;");
+}
+
+render();
+
+</script>
+
+</body>
+</html>
