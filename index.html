@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#b91c1c">
 <title>كريدي المشروبات</title>
 
@@ -17,99 +17,101 @@ body{
 header{
  background:#b91c1c;
  color:white;
+ padding:22px 15px;
  text-align:center;
- padding:25px 15px;
 }
-header h1{margin:0;font-size:30px}
-header p{margin:10px 0 0;font-size:18px}
+header h1{margin:0 0 5px;font-size:25px}
+header p{margin:0;font-size:14px}
 
-.container{padding:18px;max-width:700px;margin:auto}
+.container{
+ max-width:700px;
+ margin:auto;
+ padding:15px;
+}
 
-.cards{
+.stats{
  display:grid;
  grid-template-columns:1fr 1fr;
- gap:12px;
+ gap:10px;
+ margin-bottom:12px;
 }
+.stat{
+ background:white;
+ border-radius:14px;
+ padding:17px 8px;
+ text-align:center;
+ box-shadow:0 2px 7px #0001;
+}
+.stat b{
+ display:block;
+ margin-top:6px;
+ font-size:20px;
+ color:#b91c1c;
+}
+
 .card{
  background:white;
- border-radius:18px;
- padding:20px 10px;
- text-align:center;
- box-shadow:0 3px 12px #0001;
-}
-.card h3{margin:0 0 10px;font-size:18px}
-.card strong{font-size:27px;color:#b91c1c}
-
-button{
- border:0;
- border-radius:12px;
- padding:13px 18px;
- font-size:17px;
- cursor:pointer;
-}
-.add{
- width:100%;
- margin:18px 0;
- background:#b91c1c;
- color:white;
- font-weight:bold;
-}
-
-.customer{
- background:white;
- border-radius:16px;
- padding:16px;
+ border-radius:14px;
+ padding:15px;
  margin-bottom:12px;
- box-shadow:0 2px 8px #0001;
+ box-shadow:0 2px 7px #0001;
 }
-.customer h3{margin:0 0 8px}
-.debt{color:#b91c1c;font-weight:bold}
-.actions{display:flex;gap:8px;margin-top:12px}
-.actions button{flex:1}
-.pay{background:#16a34a;color:white}
-.delete{background:#eee;color:#b91c1c}
 
 input{
  width:100%;
  padding:13px;
- margin:7px 0;
  border:1px solid #ddd;
  border-radius:10px;
+ margin:5px 0;
  font-size:16px;
 }
 
-.modal{
- display:none;
- position:fixed;
- inset:0;
- background:#0008;
- padding:20px;
- align-items:center;
- justify-content:center;
-}
-.modal-box{
- background:white;
+button{
  width:100%;
- max-width:500px;
- border-radius:18px;
- padding:20px;
-}
-.modal-box h2{margin-top:0}
-.save{
- width:100%;
+ border:0;
+ border-radius:10px;
+ padding:13px;
+ margin-top:7px;
+ font-size:16px;
+ font-weight:bold;
  background:#b91c1c;
  color:white;
+}
+
+button.secondary{background:#555}
+button.green{background:#16803c}
+
+.customer{
+ border-top:1px solid #eee;
+ padding-top:12px;
  margin-top:10px;
 }
-.close{
- width:100%;
- background:#eee;
- margin-top:8px;
+.customer:first-child{border-top:0}
+
+.name{
+ font-size:19px;
+ font-weight:bold;
+}
+.phone{
+ color:#777;
+ font-size:13px;
+ margin-top:3px;
+}
+.debt{
+ color:#b91c1c;
+ font-size:23px;
+ font-weight:bold;
+ margin:10px 0;
+}
+.row{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:7px;
 }
 .empty{
  text-align:center;
  color:#777;
- padding:30px;
+ padding:20px;
 }
 </style>
 </head>
@@ -117,379 +119,258 @@ input{
 <body>
 
 <header>
-<h1>كريدي المشروبات 💰</h1>
+<h1>💰 كريدي المشروبات</h1>
 <p>إدارة ديون الزبائن بسهولة</p>
 </header>
 
 <div class="container">
 
-<div class="cards">
-<div class="card">
-<h3>عدد الزبائن</h3>
-<strong id="count">0</strong>
+<div class="stats">
+<div class="stat">
+إجمالي الديون
+<b id="total">0 دج</b>
+</div>
+
+<div class="stat">
+عدد الزبائن
+<b id="count">0</b>
+</div>
 </div>
 
 <div class="card">
-<h3>إجمالي الديون</h3>
-<strong><span id="total">0</span> دج</strong>
-</div>
+<h3>➕ إضافة زبون</h3>
+
+<input id="name" placeholder="اسم الزبون">
+
+<input id="phone" placeholder="رقم الهاتف (اختياري)" type="tel">
+
+<input id="amount" placeholder="مبلغ الكريدي بالدج" type="number">
+
+<button onclick="addCustomer()">حفظ الكريدي</button>
 </div>
 
-<button class="add" onclick="openAdd()">➕ إضافة زبون</button>
+<div class="card">
+<h3>🔎 البحث عن زبون</h3>
+<input id="search" placeholder="اكتب اسم الزبون..." oninput="showCustomers()">
+</div>
 
 <div id="customers"></div>
 
 </div>
 
-<div class="modal" id="modal">
-<div class="modal-box">
-
-<h2>إضافة زبون</h2>
-
-<input id="name" placeholder="اسم الزبون">
-<input id="phone" placeholder="رقم الهاتف">
-<input id="debt" type="number" placeholder="مبلغ الدين بالدج">
-
-<button class="save" onclick="addCustomer()">حفظ الزبون</button>
-<button class="close" onclick="closeModal()">إلغاء</button>
-
-</div>
-</div>
-
 <script>
 
 let customers =
-JSON.parse(localStorage.getItem("customers") || "[]");
+JSON.parse(localStorage.getItem("krediCustomers") || "[]");
 
 function save(){
- localStorage.setItem("customers",JSON.stringify(customers));
- render();
+ localStorage.setItem(
+  "krediCustomers",
+  JSON.stringify(customers)
+ );
 }
 
-function openAdd(){
- document.getElementById("modal").style.display="flex";
- document.getElementById("name").focus();
-}
-
-function closeModal(){
- document.getElementById("modal").style.display="none";
- document.getElementById("name").value="";
- document.getElementById("phone").value="";
- document.getElementById("debt").value="";
+function money(number){
+ return new Intl.NumberFormat("fr-DZ")
+ .format(number) + " دج";
 }
 
 function addCustomer(){
 
- let name=document.getElementById("name").value.trim();
- let phone=document.getElementById("phone").value.trim();
- let debt=Number(document.getElementById("debt").value);
+ const name =
+ document.getElementById("name").value.trim();
+
+ const phone =
+ document.getElementById("phone").value.trim();
+
+ const amount =
+ Number(document.getElementById("amount").value);
 
  if(!name){
-  alert("اكتب اسم الزبون");
+  alert("أدخل اسم الزبون");
   return;
  }
 
- customers.push({
-  id:Date.now(),
-  name:name,
-  phone:phone,
-  debt:debt
+ if(amount <= 0){
+  alert("أدخل مبلغ الكريدي");
+  return;
+ }
+
+ const existing =
+ customers.find(c => c.name === name);
+
+ if(existing){
+  existing.debt += amount;
+
+  if(phone)
+   existing.phone = phone;
+
+ }else{
+
+  customers.push({
+   name:name,
+   phone:phone,
+   debt:amount
+  });
+
+ }
+
+ save();
+
+ document.getElementById("name").value="";
+ document.getElementById("phone").value="";
+ document.getElementById("amount").value="";
+
+ showCustomers();
+}
+
+function payment(index){
+
+ const value =
+ Number(prompt("كم دفع الزبون؟"));
+
+ if(!value || value <= 0)
+  return;
+
+ customers[index].debt =
+ Math.max(0, customers[index].debt - value);
+
+ save();
+ showCustomers();
+}
+
+function newCredit(index){
+
+ const value =
+ Number(prompt("مبلغ الكريدي الجديد؟"));
+
+ if(!value || value <= 0)
+  return;
+
+ customers[index].debt += value;
+
+ save();
+ showCustomers();
+}
+
+function removeCustomer(index){
+
+ if(confirm("هل تريد حذف هذا الزبون؟")){
+
+  customers.splice(index,1);
+
+  save();
+  showCustomers();
+
+ }
+}
+
+function showCustomers(){
+
+ const box =
+ document.getElementById("customers");
+
+ const search =
+ document.getElementById("search")
+ .value
+ .toLowerCase();
+
+ box.innerHTML="";
+
+ let total=0;
+
+ customers.forEach(c=>{
+  total += Number(c.debt);
  });
 
- save();
- closeModal();
-}
+ document.getElementById("total")
+ .textContent=money(total);
 
-function payment(id){
+ document.getElementById("count")
+ .textContent=customers.length;
 
- let customer=customers.find(c=>c.id===id);
-
- if(!customer)return;
-
- let amount=Number(prompt(
- "المبلغ الذي دفعه الزبون بالدج:",
- "0"
- ));
-
- if(!amount || amount<=0)return;
-
- customer.debt-=amount;
-
- if(customer.debt<0)
-  customer.debt=0;
-
- save();
-}
-
-function removeCustomer(id){
-
- if(!confirm("هل تريد حذف هذا الزبون؟"))
-  return;
-
- customers=customers.filter(c=>c.id!==id);
-
- save();
-}
-
-function render(){
-
- let box=document.getElementById("customers");
-
- document.getElementById("count").textContent=
- customers.length;
-
- let total=customers.reduce(
- (sum,c)=>sum+Number(c.debt),0
+ const filtered =
+ customers
+ .map((customer,index)=>({
+  customer,
+  index
+ }))
+ .filter(x =>
+  x.customer.name
+  .toLowerCase()
+  .includes(search)
  );
 
- document.getElementById("total").textContent=
- total.toLocaleString("ar-DZ");
+ if(filtered.length===0){
 
- if(customers.length===0){
   box.innerHTML=
-  '<div class="empty">لا يوجد زبائن بعد</div>';
+  '<div class="card empty">لا يوجد زبائن</div>';
+
   return;
  }
 
- box.innerHTML=customers.map(c=>`
+ filtered.forEach(item=>{
 
- <div class="customer">
+  const c=item.customer;
+  const i=item.index;
 
- <h3>👤 ${escapeHtml(c.name)}</h3>
+  const card=
+  document.createElement("div");
 
- ${c.phone ?
- `<div>📞 ${escapeHtml(c.phone)}</div>` : ""}
+  card.className="card customer";
 
- <p>
- 💰 الدين:
- <span class="debt">
- ${Number(c.debt).toLocaleString("ar-DZ")} دج
- </span>
- </p>
+  card.innerHTML=`
 
- <div class="actions">
+   <div class="name">
+   👤 ${escapeHtml(c.name)}
+   </div>
 
- <button class="pay"
- onclick="payment(${c.id})">
- 💵 دفع
- </button>
+   <div class="phone">
+   ${c.phone ? "📞 "+escapeHtml(c.phone) : "لا يوجد رقم هاتف"}
+   </div>
 
- <button class="delete"
- onclick="removeCustomer(${c.id})">
- 🗑️ حذف
- </button>
+   <div class="debt">
+   ${money(c.debt)}
+   </div>
 
- </div>
+   <div class="row">
 
- </div>
+   <button class="green"
+   onclick="payment(${i})">
+   💵 تسجيل دفعة
+   </button>
 
- `).join("");
+   <button
+   onclick="newCredit(${i})">
+   ➕ كريدي
+   </button>
+
+   </div>
+
+   <button class="secondary"
+   onclick="removeCustomer(${i})">
+   🗑️ حذف الزبون
+   </button>
+  `;
+
+  box.appendChild(card);
+
+ });
+
 }
 
 function escapeHtml(text){
- return String(text)
+
+ return text
  .replaceAll("&","&amp;")
  .replaceAll("<","&lt;")
  .replaceAll(">","&gt;")
  .replaceAll('"',"&quot;")
  .replaceAll("'","&#039;");
+
 }
 
-render();
-
-<script>
-
-let customers =
-JSON.parse(localStorage.getItem("customers") || "[]");
-
-function save(){
- localStorage.setItem("customers",JSON.stringify(customers));
- render();
-}
-
-function openAdd(){
- document.getElementById("modal").style.display="flex";
- document.getElementById("name").focus();
-}
-
-function closeModal(){
- document.getElementById("modal").style.display="none";
- document.getElementById("name").value="";
- document.getElementById("phone").value="";
- document.getElementById("debt").value="";
-}
-
-function addCustomer(){
-
- let name=document.getElementById("name").value.trim();
- let phone=document.getElementById("phone").value.trim();
- let debt=Number(document.getElementById("debt").value);
-
- if(!name){
-  alert("اكتب اسم الزبون");
-  return;
- }
-
- customers.push({
-  id:Date.now(),
-  name:name,
-  phone:phone,
-  debt:debt,
-  payments:[]
- });
-
- save();
- closeModal();
-}
-
-function payment(id){
-
- let customer=customers.find(c=>c.id===id);
-
- if(!customer)return;
-
- let amount=Number(prompt(
- "أدخل المبلغ الذي دفعه الزبون بالدج:",
- "0"
- ));
-
- if(!amount || amount<=0)return;
-
- if(amount>customer.debt){
-  alert("المبلغ أكبر من الدين المتبقي");
-  return;
- }
-
- let now=new Date();
-
- let date=
- now.toLocaleDateString("ar-DZ")+
- " - "+
- now.toLocaleTimeString("ar-DZ",{
-  hour:"2-digit",
-  minute:"2-digit"
- });
-
- if(!customer.payments)
-  customer.payments=[];
-
- customer.payments.push({
-  amount:amount,
-  date:date
- });
-
- customer.debt-=amount;
-
- save();
-}
-
-function showHistory(id){
-
- let customer=customers.find(c=>c.id===id);
-
- if(!customer)return;
-
- if(!customer.payments || customer.payments.length===0){
-  alert("لا توجد دفعات مسجلة لهذا الزبون");
-  return;
- }
-
- let text="سجل دفعات "+customer.name+"\n\n";
-
- customer.payments.forEach((p,i)=>{
-  text+=(i+1)+"- "+
-  Number(p.amount).toLocaleString("ar-DZ")+
-  " دج\n"+
-  "📅 "+p.date+"\n\n";
- });
-
- text+="المتبقي: "+
- Number(customer.debt).toLocaleString("ar-DZ")+
- " دج";
-
- alert(text);
-}
-
-function removeCustomer(id){
-
- if(!confirm("هل تريد حذف هذا الزبون؟"))
-  return;
-
- customers=customers.filter(c=>c.id!==id);
-
- save();
-}
-
-function render(){
-
- let box=document.getElementById("customers");
-
- document.getElementById("count").textContent=
- customers.length;
-
- let total=customers.reduce(
- (sum,c)=>sum+Number(c.debt),0
- );
-
- document.getElementById("total").textContent=
- total.toLocaleString("ar-DZ");
-
- if(customers.length===0){
-  box.innerHTML=
-  '<div class="empty">لا يوجد زبائن بعد</div>';
-  return;
- }
-
- box.innerHTML=customers.map(c=>`
-
- <div class="customer">
-
- <h3>👤 ${escapeHtml(c.name)}</h3>
-
- ${c.phone ?
- `<div>📞 ${escapeHtml(c.phone)}</div>` : ""}
-
- <p>
- 💰 الدين:
- <span class="debt">
- ${Number(c.debt).toLocaleString("ar-DZ")} دج
- </span>
- </p>
-
- <div class="actions">
-
- <button class="pay"
- onclick="payment(${c.id})">
- 💵 دفع
- </button>
-
- <button
- onclick="showHistory(${c.id})">
- 📋 السجل
- </button>
-
- <button class="delete"
- onclick="removeCustomer(${c.id})">
- 🗑️ حذف
- </button>
-
- </div>
-
- </div>
-
- `).join("");
-}
-
-function escapeHtml(text){
- return String(text)
- .replaceAll("&","&amp;")
- .replaceAll("<","&lt;")
- .replaceAll(">","&gt;")
- .replaceAll('"',"&quot;")
- .replaceAll("'","&#039;");
-}
-
-render();
+showCustomers();
 
 </script>
 
